@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SIGAV - Authentication</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Merriweather:wght@700&family=Orbitron:wght@600&display=swap" rel="stylesheet">
+</head>
+<body class="auth-body">
+  <div class="bg base"></div>
+  <div class="bg vignette"></div>
+  <div class="bg glow"></div>
+
+  <header>
+    <h1 class="logo">SIGAV</h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="dashboard.html">Dashboard</a>
+    </nav>
+  </header>
+
+  <main class="auth-container">
+    <div class="auth-card glow-box">
+      <div class="tabs">
+        <button class="tab-btn active" id="loginTab">Login</button>
+        <button class="tab-btn" id="registerTab">Register</button>
+      </div>
+
+      <form id="loginForm" class="auth-form">
+        <h2>Welcome Back 🌿</h2>
+        <input type="email" placeholder="Email" required>
+        <input type="password" placeholder="Password" required>
+        <button type="submit" class="btn btn-gradient">Login</button>
+      </form>
+
+      <form id="registerForm" class="auth-form hidden">
+        <h2>Create Account 🌱</h2>
+        <input type="text" placeholder="Name" required>
+        <input type="email" placeholder="Email" required>
+        <input type="password" placeholder="Password" required>
+        <button type="submit" class="btn btn-gradient">Register</button>
+      </form>
+
+      <p id="authMessage"></p>
+    </div>
+  </main>
+
+  <footer>
+    <p>© 2025 SIGAV. Authentication</p>
+  </footer>
+
+  <script>
+    const loginTab = document.getElementById("loginTab");
+    const registerTab = document.getElementById("registerTab");
+    const loginForm = document.getElementById("loginForm");
+    const registerForm = document.getElementById("registerForm");
+    const authMsg = document.getElementById("authMessage");
+
+    loginTab.addEventListener("click", () => {
+      loginTab.classList.add("active");
+      registerTab.classList.remove("active");
+      loginForm.classList.remove("hidden");
+      registerForm.classList.add("hidden");
+    });
+
+    registerTab.addEventListener("click", () => {
+      registerTab.classList.add("active");
+      loginTab.classList.remove("active");
+      registerForm.classList.remove("hidden");
+      loginForm.classList.add("hidden");
+    });
+
+    loginForm.addEventListener("submit", e => {
+      e.preventDefault();
+      authMsg.innerText = "✅ Logged in successfully (demo only)";
+      setTimeout(() => window.location.href = "dashboard.html", 1000);
+    });
+
+    registerForm.addEventListener("submit", e => {
+      e.preventDefault();
+      authMsg.innerText = "✅ Registered successfully (demo only)";
+    });
+  </script>
+</body>
+</html>

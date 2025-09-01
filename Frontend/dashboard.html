@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SIGAV Dashboard</title>
+  <link rel="stylesheet" href="style.css"/>
+  <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Merriweather:wght@700&family=Orbitron:wght@600&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- Background Layers -->
+  <div class="bg base"></div>
+  <div class="bg vignette"></div>
+  <div class="bg glow"></div>
+
+  <!-- Header -->
+  <header>
+    <h1 class="logo">SIGAV</h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="dashboard.html" class="active">Dashboard</a>
+      <a href="auth.html">Sign In</a>
+    </nav>
+  </header>
+
+  <main>
+    <!-- Dashboard Section -->
+    <section id="dashboard" data-aos="fade-up">
+      <h2>🌿 SIGAV Dashboard</h2>
+      <p class="muted">Interactive sensor data and combined insights</p>
+
+      <div class="dashboard-grid">
+        <div class="card glow-box large" id="soil">
+          <h3>🌱 Ground Sensor Data</h3>
+          <canvas id="soilChart"></canvas>
+        </div>
+        <div class="card glow-box" id="air">
+          <h3>🌬 Air Quality</h3>
+          <canvas id="airChart"></canvas>
+        </div>
+        <div class="card glow-box" id="visual">
+          <h3>📷 Visual Cam Analytics</h3>
+          <canvas id="visualChart"></canvas>
+        </div>
+        <div class="card glow-box" id="suggestions">
+          <h3>💡 Suggestions</h3>
+          <canvas id="suggChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Summary -->
+      <div class="card glow-box summary">
+        <h2>📊 Combined Insights</h2>
+        <p id="summary-text">Analyzing data...</p>
+      </div>
+
+      <!-- CTA -->
+      <div class="cta" data-aos="fade-up">
+        <a href="index.html" class="btn btn-gradient">← Back to Home</a>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <p>© 2025 SIGAV. Dashboard</p>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SIGAV - Smart IoT Greenhouse</title>
+  <link rel="stylesheet" href="style.css"/>
+  <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Merriweather:wght@700&family=Orbitron:wght@600&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- Background Layers -->
+  <div class="bg base"></div>
+  <div class="bg vignette"></div>
+  <div class="bg glow"></div>
+
+  <!-- Header -->
+  <header>
+    <h1 class="logo">SIGAV</h1>
+    <nav>
+      <a href="#home">Home</a>
+      <a href="#features">Features</a>
+      <a href="dashboard.html">Dashboard</a>
+      <a href="#chatbot">Chatbot</a>
+      <a href="auth.html" class="btn btn-gradient">Sign In</a>
+    </nav>
+  </header>
+
+  <main>
+    <!-- Hero -->
+    <section id="home" class="hero" data-aos="fade-up">
+      <div class="hero-content">
+        <div class="tag">INTRODUCING SIGAV</div>
+        <h1>Smart IoT Greenhouse with <span class="highlight">AI Vision</span></h1>
+        <p>Monitor, analyze, and optimize your greenhouse with IoT sensors and AI vision. 
+           Sustainable farming made simple.</p>
+      </div>
+    </section>
+
+    <!-- Features -->
+    <section id="features" data-aos="fade-up">
+      <h2>Features</h2>
+      <div class="card-grid">
+        <div class="card glow-box">🌡️ Automated Climate Control</div>
+        <div class="card glow-box">🩺 Real-Time Plant Health Monitoring</div>
+        <div class="card glow-box">🧠 AI-Powered Growth Optimization</div>
+      </div>
+    </section>
+
+    <!-- Dialog Boxes -->
+    <section id="reports" data-aos="fade-up">
+      <h2>Sensor Reports Preview</h2>
+      <div class="card-grid">
+        <a href="dashboard.html#soil" class="card glow-box">🌱 Ground Sensor Data Analysis</a>
+        <a href="dashboard.html#air" class="card glow-box">🌬 Air Quality Report</a>
+        <a href="dashboard.html#visual" class="card glow-box">📷 Visual Cam Analytics</a>
+        <a href="dashboard.html#suggestions" class="card glow-box">💡 Suggestions</a>
+      </div>
+    </section>
+
+    <!-- Chatbot -->
+    <section id="chatbot" data-aos="fade-up">
+      <h2>Ask SIGAV 🌿</h2>
+      <div class="chat-container glow-box">
+        <div class="chat-box" id="chat-box">
+          <div class="msg bot-msg">👋 Hi! I’m SIGAV. Ask me about your greenhouse.</div>
+        </div>
+        <div class="chat-input">
+          <input id="user-input" type="text" placeholder="e.g., Leaves have yellow spots…" />
+          <button onclick="sendMessage()" class="btn btn-gradient">Send</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section id="get-started" class="cta" data-aos="fade-up">
+      <h2>Ready to transform your greenhouse?</h2>
+      <a href="dashboard.html" class="btn btn-gradient">Go to Dashboard ></a>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2025 SIGAV. All rights reserved.</p>
+  </footer>
+
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
