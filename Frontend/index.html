@@ -1,89 +1,1387 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>SIGAV - Smart IoT Greenhouse</title>
-  <link rel="stylesheet" href="style.css"/>
-  <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css"/>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Merriweather:wght@700&family=Orbitron:wght@600&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SIGAV - Smart IoT Greenhouse with AI Vision</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --primary: #10b981;
+  --primary-dark: #059669;
+  --primary-light: #34d399;
+  --secondary: #3b82f6;
+  --accent: #8b5cf6;
+  --dark: #0f172a;
+  --dark-light: #1e293b;
+  --text: #f1f5f9;
+  --text-dim: #94a3b8;
+  --glow-primary: rgba(16, 185, 129, 0.3);
+  --glow-secondary: rgba(59, 130, 246, 0.2);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: #0f172a;
+  color: var(--text);
+  overflow-x: hidden;
+  line-height: 1.6;
+}
+
+/* Animated Background */
+.animated-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.animated-bg::before {
+  content: '';
+  position: absolute;
+  inset: -50%;
+  width: 200%;
+  height: 200%;
+  background: 
+    radial-gradient(circle at 20% 50%, var(--glow-primary) 0%, transparent 50%),
+    radial-gradient(circle at 80% 50%, var(--glow-secondary) 0%, transparent 50%),
+    radial-gradient(circle at 50% 80%, rgba(139, 92, 246, 0.2) 0%, transparent 50%);
+  animation: rotate 30s linear infinite;
+  opacity: 0.3;
+}
+
+@keyframes rotate {
+  to { transform: rotate(360deg); }
+}
+
+.particle {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: var(--primary);
+  border-radius: 50%;
+  opacity: 0.5;
+  animation: float 20s infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0) translateX(0); }
+  50% { transform: translateY(-100vh) translateX(100px); }
+}
+
+/* Header */
+header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: rgba(15, 23, 42, 0.8);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+header.scrolled {
+  background: rgba(15, 23, 42, 0.95);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+}
+
+.header-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 32px;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--primary), var(--primary-light));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: -1px;
+  cursor: pointer;
+  transition: transform 0.3s;
+}
+
+.logo:hover {
+  transform: scale(1.05);
+}
+
+nav {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+nav a {
+  color: var(--text-dim);
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 15px;
+  transition: all 0.3s;
+  position: relative;
+}
+
+nav a::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--primary);
+  transition: width 0.3s;
+}
+
+nav a:hover {
+  color: var(--text);
+}
+
+nav a:hover::after {
+  width: 100%;
+}
+
+.btn {
+  padding: 12px 28px;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 15px;
+}
+
+.btn-gradient {
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: white;
+  border: none;
+  box-shadow: 0 4px 16px var(--glow-primary);
+}
+
+.btn-gradient:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px var(--glow-primary);
+}
+
+.btn-outline {
+  background: transparent;
+  border: 2px solid var(--primary);
+  color: var(--primary);
+}
+
+.btn-outline:hover {
+  background: var(--primary);
+  color: white;
+}
+
+.menu-toggle {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--text);
+  font-size: 28px;
+  cursor: pointer;
+}
+
+/* Hero Section */
+.hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 120px 40px 80px;
+  overflow: hidden;
+}
+
+.hero-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 80px;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+}
+
+.hero-content {
+  animation: fadeInUp 1s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 20px;
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid var(--primary);
+  border-radius: 24px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--primary);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 24px;
+}
+
+.hero h1 {
+  font-size: 72px;
+  font-weight: 900;
+  line-height: 1.1;
+  margin-bottom: 24px;
+  background: linear-gradient(135deg, var(--text) 0%, var(--text-dim) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.highlight {
+  background: linear-gradient(135deg, var(--primary), var(--primary-light));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  position: relative;
+}
+
+.hero p {
+  font-size: 20px;
+  color: var(--text-dim);
+  margin-bottom: 40px;
+  line-height: 1.8;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.hero-visual {
+  position: relative;
+  animation: fadeInRight 1s ease-out 0.3s both;
+}
+
+@keyframes fadeInRight {
+  from {
+    opacity: 0;
+    transform: translateX(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.visual-box {
+  background: rgba(30, 41, 59, 0.6);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+  padding: 40px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.visual-box::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, var(--glow-primary), var(--glow-secondary));
+  opacity: 0.1;
+  animation: pulse-glow 3s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.1; }
+  50% { opacity: 0.2; }
+}
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.stat-item {
+  text-align: center;
+  padding: 24px;
+  background: rgba(15, 23, 42, 0.6);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.stat-value {
+  font-size: 36px;
+  font-weight: 800;
+  color: var(--primary);
+  margin-bottom: 8px;
+}
+
+.stat-label {
+  font-size: 13px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Features Section */
+.features {
+  position: relative;
+  padding: 120px 40px;
+  z-index: 1;
+}
+
+.section-container {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 80px;
+}
+
+.section-tag {
+  display: inline-block;
+  padding: 6px 16px;
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid var(--secondary);
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--secondary);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 16px;
+}
+
+.section-title {
+  font-size: 56px;
+  font-weight: 800;
+  margin-bottom: 20px;
+}
+
+.section-description {
+  font-size: 18px;
+  color: var(--text-dim);
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 32px;
+}
+
+.feature-card {
+  background: rgba(30, 41, 59, 0.6);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 40px;
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+
+.feature-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.feature-card:hover {
+  transform: translateY(-8px);
+  border-color: var(--primary);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+}
+
+.feature-card:hover::before {
+  opacity: 0.05;
+}
+
+.feature-icon {
+  font-size: 48px;
+  margin-bottom: 24px;
+  display: block;
+}
+
+.feature-title {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  position: relative;
+}
+
+.feature-description {
+  color: var(--text-dim);
+  line-height: 1.8;
+  position: relative;
+}
+
+/* Reports Section */
+.reports {
+  position: relative;
+  padding: 120px 40px;
+  z-index: 1;
+  background: rgba(15, 23, 42, 0.5);
+}
+
+.reports-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+}
+
+.report-card {
+  background: rgba(30, 41, 59, 0.6);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 32px;
+  text-decoration: none;
+  color: var(--text);
+  transition: all 0.3s;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  position: relative;
+  overflow: hidden;
+}
+
+.report-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--primary), var(--secondary));
+  transform: scaleX(0);
+  transition: transform 0.3s;
+}
+
+.report-card:hover {
+  transform: translateY(-8px);
+  border-color: var(--primary);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+}
+
+.report-card:hover::before {
+  transform: scaleX(1);
+}
+
+.report-icon {
+  font-size: 40px;
+}
+
+.report-title {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.report-description {
+  font-size: 14px;
+  color: var(--text-dim);
+}
+
+.report-arrow {
+  margin-top: auto;
+  color: var(--primary);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+
+/* Chatbot Section */
+.chatbot {
+  position: relative;
+  padding: 120px 40px;
+  z-index: 1;
+}
+
+.chat-container {
+  max-width: 900px;
+  margin: 0 auto;
+  background: rgba(30, 41, 59, 0.6);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.chat-header {
+  padding: 24px 32px;
+  background: rgba(15, 23, 42, 0.8);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.chat-status {
+  width: 12px;
+  height: 12px;
+  background: var(--primary);
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+.chat-title {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.chat-box {
+  padding: 32px;
+  min-height: 400px;
+  max-height: 500px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.chat-box::-webkit-scrollbar {
+  width: 6px;
+}
+
+.chat-box::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+}
+
+.msg {
+  padding: 16px 20px;
+  border-radius: 16px;
+  max-width: 80%;
+  animation: messageSlide 0.3s ease-out;
+}
+
+@keyframes messageSlide {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.bot-msg {
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  align-self: flex-start;
+}
+
+.user-msg {
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  align-self: flex-end;
+}
+
+.chat-input-container {
+  padding: 24px 32px;
+  background: rgba(15, 23, 42, 0.8);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  gap: 12px;
+}
+
+.chat-input {
+  flex: 1;
+  padding: 14px 20px;
+  background: rgba(30, 41, 59, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  color: var(--text);
+  font-size: 15px;
+  font-family: 'Inter', sans-serif;
+  transition: all 0.3s;
+  outline: none;
+}
+
+.chat-input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--glow-primary);
+}
+
+.chat-send-btn {
+  padding: 14px 28px;
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  border: none;
+  border-radius: 12px;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.chat-send-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px var(--glow-primary);
+}
+
+.typing-indicator {
+  display: none;
+  align-self: flex-start;
+  padding: 16px 20px;
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  border-radius: 16px;
+}
+
+.typing-indicator.active {
+  display: flex;
+  gap: 6px;
+}
+
+.typing-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--primary);
+  border-radius: 50%;
+  animation: typing 1.4s infinite;
+}
+
+.typing-dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.typing-dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes typing {
+  0%, 60%, 100% {
+    transform: translateY(0);
+  }
+  30% {
+    transform: translateY(-10px);
+  }
+}
+
+/* CTA Section */
+.cta {
+  position: relative;
+  padding: 120px 40px;
+  z-index: 1;
+  text-align: center;
+}
+
+.cta-box {
+  max-width: 1200px;
+  margin: 0 auto;
+  background: rgba(30, 41, 59, 0.6);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 32px;
+  padding: 80px 60px;
+  position: relative;
+  overflow: hidden;
+}
+
+.cta-box::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, var(--glow-primary), var(--glow-secondary));
+  opacity: 0.1;
+}
+
+.cta h2 {
+  font-size: 48px;
+  font-weight: 800;
+  margin-bottom: 24px;
+  position: relative;
+}
+
+.cta p {
+  font-size: 18px;
+  color: var(--text-dim);
+  margin-bottom: 40px;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  position: relative;
+}
+
+.cta-actions {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+  position: relative;
+}
+
+/* Footer */
+footer {
+  position: relative;
+  padding: 80px 40px 40px;
+  background: rgba(15, 23, 42, 0.8);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  z-index: 1;
+}
+
+.footer-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 60px;
+  margin-bottom: 60px;
+}
+
+.footer-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.footer-logo {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 36px;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--primary), var(--primary-light));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.footer-description {
+  color: var(--text-dim);
+  line-height: 1.8;
+}
+
+.footer-section h3 {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.footer-links {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.footer-links a {
+  color: var(--text-dim);
+  text-decoration: none;
+  transition: color 0.3s;
+  font-size: 14px;
+}
+
+.footer-links a:hover {
+  color: var(--primary);
+}
+
+.footer-bottom {
+  padding-top: 40px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--text-dim);
+  font-size: 14px;
+}
+
+.social-links {
+  display: flex;
+  gap: 16px;
+}
+
+.social-link {
+  width: 40px;
+  height: 40px;
+  background: rgba(30, 41, 59, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text);
+  text-decoration: none;
+  font-size: 18px;
+  transition: all 0.3s;
+}
+
+.social-link:hover {
+  background: var(--primary);
+  border-color: var(--primary);
+  transform: translateY(-2px);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .hero-container {
+    grid-template-columns: 1fr;
+    gap: 60px;
+  }
+  
+  .hero h1 {
+    font-size: 56px;
+  }
+  
+  .footer-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  nav {
+    position: fixed;
+    top: 80px;
+    left: -100%;
+    width: 100%;
+    height: calc(100vh - 80px);
+    background: rgba(15, 23, 42, 0.98);
+    backdrop-filter: blur(20px);
+    flex-direction: column;
+    padding: 40px;
+    transition: left 0.3s;
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  nav.active {
+    left: 0;
+  }
+  
+  .menu-toggle {
+    display: block;
+  }
+  
+  .hero h1 {
+    font-size: 42px;
+  }
+  
+  .section-title {
+    font-size: 40px;
+  }
+  
+  .features-grid,
+  .reports-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .footer-container {
+    grid-template-columns: 1fr;
+  }
+  
+  .footer-bottom {
+    flex-direction: column;
+    gap: 20px;
+  }
+}
+</style>
 </head>
 <body>
-  <!-- Background Layers -->
-  <div class="bg base"></div>
-  <div class="bg vignette"></div>
-  <div class="bg glow"></div>
 
-  <!-- Header -->
-  <header>
-    <h1 class="logo">SIGAV</h1>
-    <nav>
+<!-- Animated Background -->
+<div class="animated-bg">
+  <div class="particle" style="left: 10%; animation-delay: 0s;"></div>
+  <div class="particle" style="left: 20%; animation-delay: 2s;"></div>
+  <div class="particle" style="left: 30%; animation-delay: 4s;"></div>
+  <div class="particle" style="left: 40%; animation-delay: 1s;"></div>
+  <div class="particle" style="left: 50%; animation-delay: 3s;"></div>
+  <div class="particle" style="left: 60%; animation-delay: 5s;"></div>
+  <div class="particle" style="left: 70%; animation-delay: 2.5s;"></div>
+  <div class="particle" style="left: 80%; animation-delay: 4.5s;"></div>
+  <div class="particle" style="left: 90%; animation-delay: 1.5s;"></div>
+</div>
+
+<!-- Header -->
+<header id="header">
+  <div class="header-container">
+    <h1 class="logo" onclick="window.scrollTo(0,0)">SIGAV</h1>
+    
+    <button class="menu-toggle" id="menuToggle">☰</button>
+    
+    <nav id="nav">
       <a href="#home">Home</a>
       <a href="#features">Features</a>
-      <a href="dashboard.html">Dashboard</a>
-      <a href="#chatbot">Chatbot</a>
-      <a href="auth.html" class="btn btn-gradient">Sign In</a>
+      <a href="#reports">Reports</a>
+      <a href="#chatbot">AI Assistant</a>
+      <a href="dashboard.html" class="btn btn-gradient">Dashboard</a>
     </nav>
-  </header>
+  </div>
+</header>
 
-  <main>
-    <!-- Hero -->
-    <section id="home" class="hero" data-aos="fade-up">
-      <div class="hero-content">
-        <div class="tag">INTRODUCING SIGAV</div>
-        <h1>Smart IoT Greenhouse with <span class="highlight">AI Vision</span></h1>
-        <p>Monitor, analyze, and optimize your greenhouse with IoT sensors and AI vision. 
-           Sustainable farming made simple.</p>
+<!-- Hero Section -->
+<section class="hero" id="home">
+  <div class="hero-container">
+    <div class="hero-content">
+      <div class="tag">
+        <span>🌿</span> INTRODUCING SIGAV
       </div>
-    </section>
-
-    <!-- Features -->
-    <section id="features" data-aos="fade-up">
-      <h2>Features</h2>
-      <div class="card-grid">
-        <div class="card glow-box">🌡️ Automated Climate Control</div>
-        <div class="card glow-box">🩺 Real-Time Plant Health Monitoring</div>
-        <div class="card glow-box">🧠 AI-Powered Growth Optimization</div>
+      <h1>
+        Smart IoT Greenhouse with <span class="highlight">AI Vision</span>
+      </h1>
+      <p>
+        Transform your greenhouse with cutting-edge IoT sensors and AI-powered analytics. 
+        Monitor plant health, optimize growth conditions, and maximize yield with real-time insights.
+      </p>
+      <div class="hero-actions">
+        <a href="dashboard.html" class="btn btn-gradient">Get Started →</a>
+        <a href="#features" class="btn btn-outline">Learn More</a>
       </div>
-    </section>
-
-    <!-- Dialog Boxes -->
-    <section id="reports" data-aos="fade-up">
-      <h2>Sensor Reports Preview</h2>
-      <div class="card-grid">
-        <a href="dashboard.html#soil" class="card glow-box">🌱 Ground Sensor Data Analysis</a>
-        <a href="dashboard.html#air" class="card glow-box">🌬 Air Quality Report</a>
-        <a href="dashboard.html#visual" class="card glow-box">📷 Visual Cam Analytics</a>
-        <a href="dashboard.html#suggestions" class="card glow-box">💡 Suggestions</a>
-      </div>
-    </section>
-
-    <!-- Chatbot -->
-    <section id="chatbot" data-aos="fade-up">
-      <h2>Ask SIGAV 🌿</h2>
-      <div class="chat-container glow-box">
-        <div class="chat-box" id="chat-box">
-          <div class="msg bot-msg">👋 Hi! I’m SIGAV. Ask me about your greenhouse.</div>
-        </div>
-        <div class="chat-input">
-          <input id="user-input" type="text" placeholder="e.g., Leaves have yellow spots…" />
-          <button onclick="sendMessage()" class="btn btn-gradient">Send</button>
+    </div>
+    
+    <div class="hero-visual">
+      <div class="visual-box">
+        <div class="stat-grid">
+          <div class="stat-item">
+            <div class="stat-value">98%</div>
+            <div class="stat-label">Accuracy</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">24/7</div>
+            <div class="stat-label">Monitoring</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">+35%</div>
+            <div class="stat-label">Yield Increase</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">-40%</div>
+            <div class="stat-label">Water Usage</div>
+          </div>
         </div>
       </div>
-    </section>
+    </div>
+  </div>
+</section>
 
-    <!-- CTA -->
-    <section id="get-started" class="cta" data-aos="fade-up">
-      <h2>Ready to transform your greenhouse?</h2>
-      <a href="dashboard.html" class="btn btn-gradient">Go to Dashboard ></a>
-    </section>
-  </main>
+<!-- Features Section -->
+<section class="features" id="features">
+  <div class="section-container">
+    <div class="section-header">
+      <div class="section-tag">FEATURES</div>
+      <h2 class="section-title">Everything You Need</h2>
+      <p class="section-description">
+        Advanced technology meets sustainable farming. Our comprehensive platform provides 
+        all the tools you need for optimal greenhouse management.
+      </p>
+    </div>
+    
+    <div class="features-grid">
+      <div class="feature-card">
+        <span class="feature-icon">🌡️</span>
+        <h3 class="feature-title">Automated Climate Control</h3>
+        <p class="feature-description">
+          AI-powered visual analysis detects diseases, nutrient deficiencies, and pest infestations before they become critical.
+        </p>
+      </div>
+      
+      <div class="feature-card">
+        <span class="feature-icon">🧠</span>
+        <h3 class="feature-title">AI Growth Optimization</h3>
+        <p class="feature-description">
+          Machine learning algorithms analyze your data to provide actionable recommendations and predictive insights.
+        </p>
+      </div>
+      
+      <div class="feature-card">
+        <span class="feature-icon">💧</span>
+        <h3 class="feature-title">Smart Irrigation</h3>
+        <p class="feature-description">
+          Automated watering systems that adjust based on soil moisture, weather forecasts, and plant growth stages.
+        </p>
+      </div>
+      
+      <div class="feature-card">
+        <span class="feature-icon">📊</span>
+        <h3 class="feature-title">Real-Time Analytics</h3>
+        <p class="feature-description">
+          Comprehensive dashboards with live sensor data, historical trends, and customizable alerts.
+        </p>
+      </div>
+      
+      <div class="feature-card">
+        <span class="feature-icon">🔔</span>
+        <h3 class="feature-title">Instant Alerts</h3>
+        <p class="feature-description">
+          Get notified immediately when conditions fall outside optimal ranges or maintenance is required.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
 
-  <footer>
+<!-- Reports Section -->
+<section class="reports" id="reports">
+  <div class="section-container">
+    <div class="section-header">
+      <div class="section-tag">INSIGHTS</div>
+      <h2 class="section-title">Comprehensive Reports</h2>
+      <p class="section-description">
+        Access detailed analytics from all your sensors and cameras in one unified dashboard.
+      </p>
+    </div>
+    
+    <div class="reports-grid">
+      <a href="dashboard.html#soil" class="report-card">
+        <div class="report-icon">🌱</div>
+        <h3 class="report-title">Ground Sensor Data</h3>
+        <p class="report-description">
+          Soil moisture, pH levels, temperature, and nutrient analysis with historical trends.
+        </p>
+        <div class="report-arrow">
+          View Report →
+        </div>
+      </a>
+      
+      <a href="dashboard.html#air" class="report-card">
+        <div class="report-icon">🌬️</div>
+        <h3 class="report-title">Air Quality Report</h3>
+        <p class="report-description">
+          CO₂ levels, humidity, temperature, and air circulation metrics for optimal growth.
+        </p>
+        <div class="report-arrow">
+          View Report →
+        </div>
+      </a>
+      
+      <a href="dashboard.html#visual" class="report-card">
+        <div class="report-icon">📷</div>
+        <h3 class="report-title">Visual Analytics</h3>
+        <p class="report-description">
+          AI-powered image analysis for disease detection, growth tracking, and pest monitoring.
+        </p>
+        <div class="report-arrow">
+          View Report →
+        </div>
+      </a>
+      
+      <a href="dashboard.html#suggestions" class="report-card">
+        <div class="report-icon">💡</div>
+        <h3 class="report-title">Smart Suggestions</h3>
+        <p class="report-description">
+          Personalized recommendations based on your data, weather forecasts, and best practices.
+        </p>
+        <div class="report-arrow">
+          View Report →
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- Chatbot Section -->
+<section class="chatbot" id="chatbot">
+  <div class="section-container">
+    <div class="section-header">
+      <div class="section-tag">AI ASSISTANT</div>
+      <h2 class="section-title">Ask SIGAV Anything</h2>
+      <p class="section-description">
+        Get instant answers about plant health, troubleshooting, and best practices from our AI assistant.
+      </p>
+    </div>
+    
+    <div class="chat-container">
+      <div class="chat-header">
+        <div class="chat-status"></div>
+        <div class="chat-title">SIGAV AI Assistant</div>
+      </div>
+      
+      <div class="chat-box" id="chatBox">
+        <div class="msg bot-msg">
+          👋 Hi! I'm SIGAV, your AI greenhouse assistant. I can help you diagnose plant issues, optimize growing conditions, and answer questions about your greenhouse. What would you like to know?
+        </div>
+      </div>
+      
+      <div class="typing-indicator" id="typingIndicator">
+        <div class="typing-dot"></div>
+        <div class="typing-dot"></div>
+        <div class="typing-dot"></div>
+      </div>
+      
+      <div class="chat-input-container">
+        <input 
+          type="text" 
+          class="chat-input" 
+          id="chatInput"
+          placeholder="e.g., My leaves have yellow spots..."
+          onkeypress="if(event.key==='Enter') sendMessage()"
+        >
+        <button class="chat-send-btn" onclick="sendMessage()">
+          Send
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta" id="get-started">
+  <div class="cta-box">
+    <h2>Ready to Transform Your Greenhouse?</h2>
+    <p>
+      Join thousands of farmers using SIGAV to increase yields, reduce costs, and grow sustainably.
+    </p>
+    <div class="cta-actions">
+      <a href="dashboard.html" class="btn btn-gradient">Get Started Free →</a>
+      <a href="#features" class="btn btn-outline">View Demo</a>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="footer-container">
+    <div class="footer-brand">
+      <div class="footer-logo">SIGAV</div>
+      <p class="footer-description">
+        Smart IoT Greenhouse with AI Vision. Empowering sustainable agriculture through innovative technology.
+      </p>
+    </div>
+    
+    <div class="footer-section">
+      <h3>Product</h3>
+      <div class="footer-links">
+        <a href="#features">Features</a>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="#reports">Reports</a>
+        <a href="#chatbot">AI Assistant</a>
+      </div>
+    </div>
+    
+    <div class="footer-section">
+      <h3>Company</h3>
+      <div class="footer-links">
+        <a href="#">About Us</a>
+        <a href="#">Careers</a>
+        <a href="#">Blog</a>
+        <a href="#">Contact</a>
+      </div>
+    </div>
+    
+    <div class="footer-section">
+      <h3>Support</h3>
+      <div class="footer-links">
+        <a href="#">Documentation</a>
+        <a href="#">Help Center</a>
+        <a href="#">Community</a>
+        <a href="#">Privacy Policy</a>
+      </div>
+    </div>
+  </div>
+  
+  <div class="footer-bottom">
     <p>© 2025 SIGAV. All rights reserved.</p>
-  </footer>
+    <div class="social-links">
+      <a href="#" class="social-link">𝕏</a>
+      <a href="#" class="social-link">📘</a>
+      <a href="#" class="social-link">📷</a>
+      <a href="#" class="social-link">💼</a>
+    </div>
+  </div>
+</footer>
 
-  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-  <script src="script.js"></script>
+<script>
+// Header scroll effect
+const header = document.getElementById('header');
+window.addEventListener('scroll', () => {
+  if (window.scrollY > 50) {
+    header.classList.add('scrolled');
+  } else {
+    header.classList.remove('scrolled');
+  }
+});
+
+// Mobile menu toggle
+const menuToggle = document.getElementById('menuToggle');
+const nav = document.getElementById('nav');
+
+menuToggle.addEventListener('click', () => {
+  nav.classList.toggle('active');
+});
+
+// Close menu when clicking a link
+nav.querySelectorAll('a').forEach(link => {
+  link.addEventListener('click', () => {
+    nav.classList.remove('active');
+  });
+});
+
+// Chatbot functionality
+const responses = {
+  yellow: {
+    keywords: ['yellow', 'yellowing', 'chlorosis'],
+    response: "🟡 **Yellow leaves detected!** This is often a sign of:<br><br>• **Nitrogen deficiency** - Apply balanced NPK fertilizer<br>• **Iron deficiency** - Check soil pH (should be 6.0-7.0)<br>• **Overwatering** - Improve drainage and reduce watering frequency<br><br>💡 Try a soil test to identify the exact cause."
+  },
+  spots: {
+    keywords: ['spot', 'spots', 'dotted', 'speckled'],
+    response: "🧫 **Spots on leaves suggest:**<br><br>• **Fungal infection** (most common) - Remove affected leaves, improve airflow<br>• **Bacterial disease** - Apply copper-based fungicide<br>• **Pest damage** - Inspect for thrips or spider mites<br><br>🌬️ Increase ventilation and reduce humidity to prevent spread."
+  },
+  humidity: {
+    keywords: ['humidity', 'humid', 'moisture', 'damp'],
+    response: "🌬️ **High humidity detected!**<br><br>**Recommendations:**<br>• Increase ventilation and air circulation<br>• Use dehumidifiers if above 70%<br>• Space plants for better airflow<br>• Water early in the day<br><br>📊 Optimal humidity: 50-70% for most plants."
+  },
+  temperature: {
+    keywords: ['temperature', 'temp', 'hot', 'cold', 'heat'],
+    response: "🌡️ **Temperature management tips:**<br><br>• **Optimal range:** 65-75°F (18-24°C) during day<br>• **Night:** 10°F cooler than day<br>• Use shade cloth if too hot<br>• Heating mats for cold periods<br><br>⚠️ Extreme temps stress plants and reduce yields."
+  },
+  water: {
+    keywords: ['water', 'watering', 'irrigation', 'wilting'],
+    response: "💧 **Watering guidelines:**<br><br>• **Check soil moisture** before watering<br>• Water deeply but less frequently<br>• Morning watering is best<br>• Adjust based on plant size and weather<br><br>📉 Overwatering is more harmful than underwatering!"
+  },
+  nutrients: {
+    keywords: ['nutrient', 'fertilizer', 'feed', 'npk'],
+    response: "🌱 **Nutrient management:**<br><br>• **N (Nitrogen)** - Leaf growth<br>• **P (Phosphorus)** - Root & flower development<br>• **K (Potassium)** - Overall plant health<br><br>💡 Use balanced fertilizer (10-10-10) or adjust based on growth stage."
+  },
+  pests: {
+    keywords: ['pest', 'bug', 'insect', 'aphid', 'mite', 'whitefly'],
+    response: "🪲 **Pest control strategies:**<br><br>• **Identify the pest** first (aphids, mites, etc.)<br>• Use beneficial insects (ladybugs, lacewings)<br>• Neem oil or insecticidal soap<br>• Yellow sticky traps<br><br>🛡️ Prevention: Keep greenhouse clean and quarantine new plants."
+  },
+  disease: {
+    keywords: ['disease', 'sick', 'dying', 'unhealthy'],
+    response: "🩺 **Disease diagnosis:**<br><br>1. **Examine symptoms** (spots, wilting, discoloration)<br>2. **Check environmental conditions**<br>3. **Isolate affected plants**<br>4. **Remove diseased material**<br><br>📸 Upload photos to dashboard for AI analysis!"
+  }
+};
+
+function sendMessage() {
+  const input = document.getElementById('chatInput');
+  const chatBox = document.getElementById('chatBox');
+  const typingIndicator = document.getElementById('typingIndicator');
+  
+  if (!input || !chatBox) return;
+  
+  const message = input.value.trim();
+  if (!message) return;
+  
+  // Add user message
+  const userMsg = document.createElement('div');
+  userMsg.className = 'msg user-msg';
+  userMsg.textContent = message;
+  chatBox.appendChild(userMsg);
+  
+  // Clear input
+  input.value = '';
+  
+  // Scroll to bottom
+  chatBox.scrollTop = chatBox.scrollHeight;
+  
+  // Show typing indicator
+  typingIndicator.classList.add('active');
+  
+  // Generate response
+  setTimeout(() => {
+    typingIndicator.classList.remove('active');
+    
+    const botMsg = document.createElement('div');
+    botMsg.className = 'msg bot-msg';
+    
+    // Find matching response
+    let response = "🌿 **General greenhouse tips:**<br><br>• Maintain consistent temperature (65-75°F)<br>• Keep humidity at 50-70%<br>• Ensure good air circulation<br>• Monitor soil moisture daily<br>• Check plants for pests weekly<br><br>💡 Ask me about specific issues like 'yellow leaves' or 'pest control'!";
+    
+    const lowerMessage = message.toLowerCase();
+    for (const [key, data] of Object.entries(responses)) {
+      if (data.keywords.some(keyword => lowerMessage.includes(keyword))) {
+        response = data.response;
+        break;
+      }
+    }
+    
+    botMsg.innerHTML = response;
+    chatBox.appendChild(botMsg);
+    
+    // Scroll to bottom
+    chatBox.scrollTop = chatBox.scrollHeight;
+  }, 1200);
+}
+
+// Smooth scrolling for anchor links
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+  anchor.addEventListener('click', function (e) {
+    e.preventDefault();
+    const target = document.querySelector(this.getAttribute('href'));
+    if (target) {
+      target.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }
+  });
+});
+
+// Animate elements on scroll
+const observerOptions = {
+  threshold: 0.1,
+  rootMargin: '0px 0px -100px 0px'
+};
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.style.opacity = '1';
+      entry.target.style.transform = 'translateY(0)';
+    }
+  });
+}, observerOptions);
+
+// Observe all feature cards and report cards
+document.querySelectorAll('.feature-card, .report-card').forEach(el => {
+  el.style.opacity = '0';
+  el.style.transform = 'translateY(30px)';
+  el.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
+  observer.observe(el);
+});
+
+// Add some example messages to chatbot
+setTimeout(() => {
+  const chatBox = document.getElementById('chatBox');
+  const exampleMsg = document.createElement('div');
+  exampleMsg.className = 'msg bot-msg';
+  exampleMsg.style.opacity = '0.7';
+  exampleMsg.innerHTML = '💬 <strong>Try asking:</strong><br>"My leaves have yellow spots"<br>"How to control humidity"<br>"What nutrients do I need?"';
+  chatBox.appendChild(exampleMsg);
+}, 3000);
+</script>
 </body>
 </html>
+          Intelligent temperature, humidity, and ventilation management that adapts to your plants' needs in real-time.
+        </p>
+      </div>
+      
+      <div class="feature-card">
+        <span class="feature-icon">🩺</span>
+        <h3 class="feature-title">Plant Health Monitoring</h3>
+        <p class="feature-description">
